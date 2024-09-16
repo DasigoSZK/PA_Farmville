@@ -3,6 +3,7 @@ import core.*;
 import modelos.*;
 import controladores.*;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 import javax.swing.JOptionPane;
@@ -265,15 +266,61 @@ public class Maqueta {
 
 	private static void campos() {
 		
-		// Registrar campo / Modificar campo / Registrar Lote / Modificar Lote / Eliminar campo/lote
-		int opMenuInicial = JOptionPane.showOptionDialog(null, "Aquí se mostrarán tus campos y lotes registrados.", "Campos",
+		Productor usuario = (Productor)Maqueta.userSesion;
+		
+		// Muestra listado de campos registrados
+		String listadoCampos = "";
+		if(usuario.getCampos() == null || usuario.getCampos().isEmpty()) {
+			usuario.setCampos(new LinkedList<Campo>());
+			listadoCampos = "Aún no tienes campos registrados, prueba registrar uno.";
+		}else {
+			int count1 = 0;
+			for(Campo campo : usuario.getCampos()) {
+				
+				listadoCampos += ++count1 + "_" + campo.getNombre() + " - " + campo.getUbicacion() + " - " + campo.getHectareas() + " hectareas\n";
+			}	
+		}
+		
+		int opMenuCampo = JOptionPane.showOptionDialog(null, listadoCampos, "Campos",
 				JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION,
-				null, new String[] {"Registrar Campo", "Modificar Campo","Eliminar Campo","Asociar Lote", "Modificar Lote", "Eliminar Lote", "Salir"}, "Salir");
+				null, new String[] {"Registrar Campo", "Modificar Campo","Eliminar Campo","Asociar Lote", "Modificar Lote", "Eliminar Lote", "Volver"}, "Volver");
+		
+		
+		// Registrar un campo
+		if(opMenuCampo == 0) {
+			
+			Maqueta.registrarCampo(usuario);
+			
+		// Modificar campo	
+		}else if(opMenuCampo == 1) {
+			
+			Maqueta.modificarCampo(usuario);
+			
+		// Eliminar un campo	
+		}else if(opMenuCampo == 2) {
+			
+			Maqueta.eliminarCampo(usuario);
+		
+		// Asociar un Lote
+		}else if(opMenuCampo == 3) {
+			
+		// Modificar un Lote	
+		}else if(opMenuCampo == 4) {
+			
+		// Eliminar un Lote	
+		}else if(opMenuCampo == 5) {
+			
+		// Volver	
+		}else {
+			Maqueta.menuUser();
+		}
+		
 	}
 
 	private static void hacienda() {
 		
 		// Stock Actual / Historial de Bajas / Registrar Bovino / Registrar Jaula
+		JOptionPane.showMessageDialog(null, "Aquí se podrá gestionar los servicios de hotelería.\n(Escapan del MVP)");
 		
 	}
 
@@ -368,7 +415,94 @@ public class Maqueta {
 		
 	}
 
-
-	
-
+	// ----------------- Utilidades CRUD ------------------
+	private static void registrarCampo(Productor usuario) {
+		
+		String idCampo = usuario.getCampos() == null ? "1" : String.valueOf(usuario.getCampos().size()+1);
+		String nombreCampo = JOptionPane.showInputDialog("Ingrese el nombre del campo");
+		String ubicacion = JOptionPane.showInputDialog("Ingrese la ubicación del campo");
+		int hectareas = Integer.parseInt(JOptionPane.showInputDialog("Ingrese las hectareas estimadas del campo \"" + nombreCampo + "\"."));
+		
+		Campo nuevoCampo = new Campo(idCampo, nombreCampo, ubicacion, hectareas, Integer.parseInt(usuario.getId()));
+		
+		usuario.getCampos().add(nuevoCampo);
+		
+		JOptionPane.showMessageDialog(null, "Nuevo campo registrado.");
+		Maqueta.campos();
+	}
+	private static void modificarCampo(Productor usuario) {
+		// Listamos los campos
+		int count = 0;
+		Campo campoAModificar = null;
+		String camposUsuario = "Ingrese el nombre del campo a modificar:\n";
+		for(Campo campo : usuario.getCampos()) {
+			
+			camposUsuario += ++count + "_" + campo.getNombre() + "\n";
+		}
+		
+		String nombreCampoModificar = JOptionPane.showInputDialog(camposUsuario);
+		
+		// Buscamos entre los campos del usuario
+		for(Campo campo : usuario.getCampos()) {
+			
+			if(nombreCampoModificar.equalsIgnoreCase(campo.getNombre())) {
+				campoAModificar = campo;
+			}
+		}
+		
+		// No se encontró el campo
+		if(campoAModificar == null) {
+			JOptionPane.showMessageDialog(null, "El campo \"" + nombreCampoModificar + "\" no se encuentra registrado.\nRevise su ortografía");
+			Maqueta.campos();
+		}else {
+		// Modificamos el campo
+			String nombreCampo = JOptionPane.showInputDialog("Ingrese el nuevo nombre para el campo " + campoAModificar.getNombre() + " o deje el campo vacío para no modificarlo.");
+			String ubicacion = JOptionPane.showInputDialog("Ingrese la nueva ubicación del campo o deje el espacio vacío para no modificarlo.");
+			String hectareas = JOptionPane.showInputDialog("Ingrese la nueva cantidad de hectareas del campo o deje el espacio vacío para no modificarlo.");
+			
+			nombreCampo = nombreCampo.length() == 0 ? campoAModificar.getNombre() : nombreCampo;
+			ubicacion = ubicacion.length() == 0 ? campoAModificar.getUbicacion() : ubicacion;
+			int parsedHectareas = hectareas.length() == 0 ? campoAModificar.getHectareas() : Integer.parseInt(hectareas);
+			
+			campoAModificar.setNombre(nombreCampo);
+			campoAModificar.setUbicacion(ubicacion);
+			campoAModificar.setHectareas(parsedHectareas);
+			
+			JOptionPane.showMessageDialog(null, "Campo " + campoAModificar.getId() + " modificado.");
+			Maqueta.campos();
+		}
+	}
+	private static void eliminarCampo(Productor usuario) {
+		// Listamos los campos
+		int count = 0;
+		Campo campoAEliminar = null;
+		String camposUsuario = "Ingrese el nombre del campo a eliminar:\n";
+		for(Campo campo : usuario.getCampos()) {
+			
+			camposUsuario += ++count + "_" + campo.getNombre() + "\n";
+		}
+		
+		String nombreCampoEliminar = JOptionPane.showInputDialog(camposUsuario);
+		
+		// Buscamos entre los campos del usuario
+		for(Campo campo : usuario.getCampos()) {
+			
+			if(nombreCampoEliminar.equalsIgnoreCase(campo.getNombre())) {
+				campoAEliminar = campo;
+			}
+		}
+		
+		// No se encontró el campo
+		if(campoAEliminar == null) {
+			JOptionPane.showMessageDialog(null, "El campo \"" + nombreCampoEliminar + "\" no se encuentra registrado.\nRevise su ortografía");
+			Maqueta.campos();
+		}else {
+			
+			// Eliminamos el campo
+			usuario.getCampos().remove(campoAEliminar);
+			
+			JOptionPane.showMessageDialog(null, "Campo " + nombreCampoEliminar + " eliminado.");
+			Maqueta.campos();
+		}
+	}
 }
