@@ -35,7 +35,7 @@ public class Maqueta {
 	
 	// -------------------------------------------------------------------------------------------------------------------------------
 	
-	// Menu 1
+	// Funciones Principales
 	public static void menuInicial() {
 		
 		int opMenuInicial = JOptionPane.showOptionDialog(null, "Bienvenido a Farmville", "Menu Principal", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION,
@@ -126,7 +126,6 @@ public class Maqueta {
 		
 	}
 
-	// Registrar un usuario
 	private static void registrarse() {
 		
 		String correo = JOptionPane.showInputDialog("Ingrese un correo electrónico");
@@ -143,8 +142,6 @@ public class Maqueta {
 		Maqueta.menuInicial();
 	}
 	
-	
-	// Loguearse
 	private static void login() {
 		
 		Usuario usuario = null;
@@ -277,7 +274,22 @@ public class Maqueta {
 			int count1 = 0;
 			for(Campo campo : usuario.getCampos()) {
 				
-				listadoCampos += ++count1 + "_" + campo.getNombre() + " - " + campo.getUbicacion() + " - " + campo.getHectareas() + " hectareas\n";
+				listadoCampos += ++count1 + "_" + campo.getNombre() + " - " + campo.getUbicacion() 
+				+ " - " + campo.getHectareas() + " hectareas";
+				
+				// Si tiene lotes asociados
+				if(campo.getLotes() != null && !campo.getLotes().isEmpty()) {
+					// Añadimos los lotes del campo
+					listadoCampos += " | Lotes: ";
+					String listadoLotes = "";
+					for(Lote lote : campo.getLotes()) {
+						listadoLotes += lote.getNumero() + ", ";
+					}
+					listadoLotes = listadoLotes.substring(0, listadoLotes.length()-2);
+					listadoCampos += listadoLotes + "\n";
+				}else {
+					listadoCampos += "\n";
+				}
 			}	
 		}
 		
@@ -304,11 +316,58 @@ public class Maqueta {
 		// Asociar un Lote
 		}else if(opMenuCampo == 3) {
 			
+			// Seleccionamos el campo al que se asociará el lote
+			int numCampo = Maqueta.listarCampos("Ingrese el número del campo al que desea asociarle un nuevo lote:\n");
+			Campo campoSeleccionado = Maqueta.buscarCampoPorNum(numCampo);
+			if(campoSeleccionado.getLotes() == null) {
+				campoSeleccionado.setLotes(new LinkedList<Lote>());
+			}
+			
+			// Creamos un nuevo lote
+			String id = campoSeleccionado.getLotes().isEmpty() ? "1" : String.valueOf(campoSeleccionado.getLotes().size());
+			String numero = JOptionPane.showInputDialog("Ingrese el número u nombre del lote.");
+			int hectareas = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de hectareas del lote " + numero));
+			int fk_campo = Integer.parseInt(campoSeleccionado.getId());
+			Lote nuevoLote = new Lote(id, numero, hectareas, fk_campo);
+			
+			// Asociamos el lote al campo
+			campoSeleccionado.getLotes().add(nuevoLote);
+			Maqueta.campos();
+			
 		// Modificar un Lote	
 		}else if(opMenuCampo == 4) {
+				
+			// Seleccionamos el campo al que pertenece el lote
+			int numCampo = Maqueta.listarCampos("Ingrese el número de campo al que pertenece el lote:\n");
+			Campo campoSeleccionado = usuario.getCampos().get(numCampo-1);
+			// Seleccionamos el lote a modificar
+			Lote loteSeleccionado = null;
+			while(loteSeleccionado == null) {				
+				String numLote = Maqueta.listarLotes(campoSeleccionado, "Ingrese el número de lote que desea modificar");
+				loteSeleccionado = Maqueta.buscarLotePorNumero(campoSeleccionado, numLote);
+			}
+			// Modificamos los datos del lote
+			Maqueta.modificarLote(loteSeleccionado);
+			Maqueta.campos();
+			
 			
 		// Eliminar un Lote	
 		}else if(opMenuCampo == 5) {
+			
+			// Seleccionamos el campo al que pertenece el lote
+			int numCampo = Maqueta.listarCampos("Ingrese el número de campo al que pertenece el lote:\n");
+			Campo campoSeleccionado = usuario.getCampos().get(numCampo-1);
+			// Seleccionamos el lote a modificar
+			Lote loteSeleccionado = null;
+			while(loteSeleccionado == null) {				
+				String numLote = Maqueta.listarLotes(campoSeleccionado, "Ingrese el número de lote que desea eliminar");
+				loteSeleccionado = Maqueta.buscarLotePorNumero(campoSeleccionado, numLote);
+			}
+			
+			String numLote = loteSeleccionado.getNumero();
+			campoSeleccionado.getLotes().remove(loteSeleccionado);
+			JOptionPane.showMessageDialog(null, "Lote " + numLote + " eliminado");
+			Maqueta.campos();
 			
 		// Volver	
 		}else {
@@ -392,7 +451,7 @@ public class Maqueta {
 						null, new String[] {"Volver a intentar", "Volver"}, "Volver");
 				
 				if(opCC == 0) {
-					passIngresada = JOptionPane.showInputDialog(usuario.getPreguntaSeguridad());
+					passIngresada = JOptionPane.showInputDialog("Ingresa tu contraseña actual.");
 				}else {
 					if( usuario instanceof Productor) {
 						
@@ -415,7 +474,9 @@ public class Maqueta {
 		
 	}
 
+	
 	// ----------------- Utilidades CRUD ------------------
+	// Campos
 	private static void registrarCampo(Productor usuario) {
 		
 		String idCampo = usuario.getCampos() == null ? "1" : String.valueOf(usuario.getCampos().size()+1);
@@ -473,6 +534,7 @@ public class Maqueta {
 		}
 	}
 	private static void eliminarCampo(Productor usuario) {
+
 		// Listamos los campos
 		int count = 0;
 		Campo campoAEliminar = null;
@@ -504,5 +566,85 @@ public class Maqueta {
 			JOptionPane.showMessageDialog(null, "Campo " + nombreCampoEliminar + " eliminado.");
 			Maqueta.campos();
 		}
+	}
+
+	
+	private static int listarCampos(String enunciado) {
+		
+		Productor usuario = (Productor)Maqueta.userSesion;
+		// Listamos los campos
+		int count = 0;
+		String camposUsuario = enunciado;
+		for(Campo campo : usuario.getCampos()) {
+			
+			camposUsuario += ++count + "_" + campo.getNombre() + "\n";
+		}
+		
+		int numCampo = 0;
+		boolean numValido = false;
+		
+		while(!numValido) {
+			
+			String campo = JOptionPane.showInputDialog(camposUsuario);
+			try {
+				numCampo = Integer.parseInt(campo);
+				if(numCampo > usuario.getCampos().size()) {
+					throw new NumberFormatException();
+				}
+				numValido = true;
+			}catch(NumberFormatException e) {
+				
+				JOptionPane.showMessageDialog(null, "El valor ingresado debe ser un número y debe corresponder a un campo existente.");
+			}
+			
+		}
+		
+		return numCampo;
+	}
+	private static Campo buscarCampoPorNum(int numCampo) {
+		
+		Productor usuario = (Productor)Maqueta.userSesion;
+		
+		return usuario.getCampos().get(numCampo-1);
+	}
+	
+	// Lotes
+	private static String listarLotes(Campo campo, String enunciado) {
+		
+		String listaLotes = "";
+		for(Lote lote : campo.getLotes()) {
+			
+			listaLotes += "Lote: "+lote.getNumero() + "\n";
+		}
+		
+		String numLote = JOptionPane.showInputDialog(enunciado + "\n" + listaLotes);
+		
+		return numLote;
+	}
+	private static Lote buscarLotePorNumero(Campo campo, String numLote) {
+		
+		for(Lote lote : campo.getLotes()) {
+			
+			if(numLote.equalsIgnoreCase(lote.getNumero())) {
+				return lote;
+			}
+		}
+		
+		JOptionPane.showMessageDialog(null, "El número de lote ingresado no corresponde a ningún lote registrado.\nInténtelo nuevamente");
+		
+		return null;
+	}
+	private static void modificarLote(Lote loteSeleccionado) {
+	
+		/* (String id, String numero, int hectareas,int fk_campo*/
+		String nuevoNumero = JOptionPane.showInputDialog("Ingrese el nuevo número de lote o deje el campo vacío para no modificarlo");
+		String nuevasHectareas = JOptionPane.showInputDialog("Ingrese el nuevo número de hectareas o deje el campo vacío para no modificarlo");
+		nuevoNumero = nuevoNumero.length() == 0 ? loteSeleccionado.getNumero() : nuevoNumero;
+		int inthectareas = nuevasHectareas.length() == 0 ? loteSeleccionado.getHectareas() : Integer.parseInt(nuevasHectareas); 
+		
+		loteSeleccionado.setNumero(nuevoNumero);
+		loteSeleccionado.setHectareas(inthectareas);
+		
+		JOptionPane.showMessageDialog(null, "Lote " + loteSeleccionado.getNumero() + " modificado con éxito.");
 	}
 }
