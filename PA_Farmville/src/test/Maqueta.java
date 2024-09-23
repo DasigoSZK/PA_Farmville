@@ -254,14 +254,34 @@ public class Maqueta {
 	private static void hoteleria() {
 		
 		// Registrar hoteleria / modificar hoteleria / eliminar hotelería / finalizar hotelería
-		JOptionPane.showMessageDialog(null, "Aquí se podrá gestionar los servicios de hotelería.\n(Funcionalidad que escapa del MVP)");
+		JOptionPane.showMessageDialog(null, "Aquí se podrá gestionar los servicios de hotelería.\n"
+				+ "El productor registrará bovinos de terceros guardando su peso inicial y su ganancia por kilo ganado"
+				+ " junto a una fecha estimada para el fin del servicio.");
 		Maqueta.menuUser();
 	}
 
 	private static void ventas() {
 		
 		// Registrar venta / Ver detalles de venta / Eliminar venta
+		Productor usuario = (Productor)Maqueta.userSesion;
+		String ventas = Maqueta.listarVentas(usuario);
 		
+		int opMenuVentas = JOptionPane.showOptionDialog(null, ventas, "Menu Ventas", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION,
+				null, new String[] {"Registrar Venta", "Eliminar Venta", "Volver"}, "Volver");
+		
+		// Registrar Venta
+		if(opMenuVentas == 0) {
+			
+			Maqueta.registrarVenta(usuario);
+			
+		// Eliminar Venta	
+		}else if(opMenuVentas == 1) {
+			
+			Maqueta.eliminarVenta(usuario);
+			
+		}else if(opMenuVentas == 2) {
+			Maqueta.menuUser();
+		}
 	}
 
 	private static void campos() {
@@ -474,8 +494,6 @@ public class Maqueta {
 			Maqueta.menuUser();
 		}
 	}
-
-
 
 	private static void miCuenta() {
 		
@@ -1192,5 +1210,192 @@ public class Maqueta {
 		bovinoRecuperar.setEstado(EstadoBovino.EN_STOCK.getValorInterno());
 		JOptionPane.showMessageDialog(null, "Se movió el bovino " + bovinoRecuperar.getId() + " nuevamente a tu stock.");
 		Maqueta.historialDeBajas(usuario);
+	}
+
+	// Ventas
+	private static String listarVentas(Productor usuario) {
+		
+		
+		String listaVentas = "";
+		
+		if(usuario.getVentas() == null || usuario.getVentas().isEmpty()) {
+			listaVentas = "Aun no tienes ventas.\nPrueba registrar una.";
+			usuario.setVentas(new LinkedList<Venta>());
+		}else {
+			// Construye cada venta
+			for(Venta venta : usuario.getVentas()) {
+				
+				listaVentas += "Venta n°: "+venta.getId();
+				// Bovinos de la venta
+				String bovinosVendidos = " | Bovinos vendidos: ";
+				for(Bovino bovino : venta.getBovinosVendidos()) {
+					bovinosVendidos += bovino.getId() + ", ";
+				}
+				bovinosVendidos = bovinosVendidos.substring(0, bovinosVendidos.length()-2);
+				listaVentas += bovinosVendidos;
+				// Tipo de venta
+				listaVentas += " | Venta para: " + venta.getProposito();
+						
+			}
+		}
+		
+		
+		return listaVentas;
+	}
+	private static void registrarVenta(Productor usuario) {
+		
+		if(Maqueta.obtenerStock(usuario.getBovinos()).isEmpty()) {
+			
+			JOptionPane.showInputDialog("No tienes bovinos registrados en tu stock para poder generar una venta.\nPrueba registrar bovinos primero.");
+			Maqueta.ventas();
+		}else {
+				
+			// id
+			if(usuario.getVentas() == null) {
+				usuario.setVentas(new LinkedList<Venta>());
+			}
+			String id = String.valueOf(usuario.getVentas().size());
+			// Fecha
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			String stringFecha = JOptionPane.showInputDialog("Ingrese la fecha de la venta en formato \"dd/MM/yyyy\" \n(Ejemplo 17/09/2024):");
+			LocalDate fechaAdquisicion = LocalDate.parse(stringFecha, formatter);
+			// Comprador
+			String comprador = JOptionPane.showInputDialog("Ingrese el nombre del comprador");
+			// Num Factura
+			String numFactura = JOptionPane.showInputDialog("Ingrese el número de factura");
+			// Forma de pago
+			String formaPago = JOptionPane.showInputDialog("Ingrese la forma de pago (contado/transferencia).");
+			// Campo origen
+			String campoOrigen = JOptionPane.showInputDialog("¿En qué campo se cargan los bovinos?");
+			// Destino
+			String destino = JOptionPane.showInputDialog("¿En qué campo se descargan los bovinos?");
+			// Bovinos Vendidos
+			List<Bovino> bovinosDeVenta = Maqueta.seleccionarBovinosVenta(usuario.getBovinos());
+			// Importe total
+			double importeTotal = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el importe total de la venta."));
+			// Proposito
+			String[] opcionesPropositos = {
+					PropositoVenta.FEEDLOT.getValorInterno(),			
+					PropositoVenta.CONSERVA.getValorInterno(),			
+					PropositoVenta.CRIA.getValorInterno(),			
+					PropositoVenta.GENETICA.getValorInterno(),			
+					PropositoVenta.INVERNADA.getValorInterno(),			
+					PropositoVenta.RECRIA.getValorInterno(),			
+			};
+			int opProposito = JOptionPane.showOptionDialog(null, "¿Cuál es el propósito de la venta?", "Menu Bovinos", JOptionPane.DEFAULT_OPTION, JOptionPane.DEFAULT_OPTION,
+					null, opcionesPropositos, opcionesPropositos[0]);
+			String proposito = opcionesPropositos[opProposito];
+			// Rinde
+			int rinde = 0;
+			if(proposito.equalsIgnoreCase(PropositoVenta.FEEDLOT.getValorInterno())) {
+				rinde = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el procentaje de rinde de la venta (número sin comas)"));
+			}
+			// fk_usuario
+			int fk_usuario = Integer.parseInt(usuario.getId());
+			
+			// Registramos la venta
+			Venta nuevaVenta = new Venta(id, fechaAdquisicion, comprador, numFactura, formaPago, campoOrigen, destino,
+					bovinosDeVenta,importeTotal, proposito, rinde, fk_usuario);
+			// Agregamos la venta al usuario
+			usuario.getVentas().add(nuevaVenta);
+		}
+		
+		JOptionPane.showMessageDialog(null, "Venta registrada con éxito.\nRevisa el panel de ventas.");
+		Maqueta.ventas();
+
+	}
+
+	private static List<Bovino> seleccionarBovinosVenta(List<Bovino> bovinos) {
+	
+		int agregarOtro = JOptionPane.YES_OPTION;
+		List<Bovino> bovinosVenta = new LinkedList<>();
+		List<Bovino> bovinosEnStock = Maqueta.obtenerStock(bovinos);
+		
+		// Cargamos bovinos del stock a la venta
+		while(agregarOtro == JOptionPane.YES_OPTION || bovinosEnStock.isEmpty()) {
+			
+			// Generar una lista para seleccionar bovinos (modificada en cada iteración)
+			String listaBovinos = "";
+			for(Bovino bovino : bovinosEnStock) {
+				listaBovinos += "ID: "+bovino.getId() +" | Caravana: " + bovino.getCaravana() 
+				+ " | Categoría: " + bovino.getCategoria() + " | " + bovino.getPeso() + " | Edad:" + bovino.getEdad() + "\n";
+			}
+			
+			// Seleccionamos el id de un bovino mostrando la lista
+			String idBovino = JOptionPane.showInputDialog("Ingrese el ID del bovino que desea agregar a la venta:\n" + listaBovinos);
+			
+			// Buscamos el bovino
+			Iterator<Bovino> iterator = bovinosEnStock.iterator();
+			while (iterator.hasNext()) {
+			    Bovino bovino = iterator.next();
+			    if (bovino.getId().equalsIgnoreCase(idBovino)) {
+			        // Lo agregamos a la venta
+			        bovinosVenta.add(bovino);
+			        // Lo quitamos del stock de manera segura
+			        iterator.remove();
+			    }
+			}
+			
+			// Pregunta si quiere agregar otro (rompiendo el bucle)
+			agregarOtro = JOptionPane.showConfirmDialog(null, "¿Quiere agregar otro bovino a la venta?", "Modificar Bovino", JOptionPane.YES_NO_OPTION);
+		}
+		
+		
+		return bovinosVenta;
+	}
+
+	private static List<Bovino> obtenerStock(List<Bovino> bovinos) {
+		
+		List<Bovino> bovinosEnStock = new LinkedList<>();
+		for(Bovino bovino : bovinos) {
+			if(bovino.getEstado().equalsIgnoreCase(EstadoBovino.EN_STOCK.getValorInterno())) {
+				bovinosEnStock.add(bovino);
+			}
+		}
+		
+		return bovinosEnStock;
+	}
+	
+	private static void eliminarVenta(Productor usuario) {
+		
+		int eliminarOtro = JOptionPane.YES_OPTION;
+		
+		if(usuario.getVentas() == null) {
+			JOptionPane.showMessageDialog(null, "Aún no tienes ventas.\nPrueba registrar una.");
+			Maqueta.ventas();
+		}else {
+			
+			while(eliminarOtro == JOptionPane.YES_OPTION && !usuario.getVentas().isEmpty()) {
+				
+				String idVenta = JOptionPane.showInputDialog("Ingrese el n° de venta que desea eliminar:\n"+Maqueta.listarVentas(usuario));
+				
+				Venta ventaSelec = Maqueta.obtenerVenta(idVenta);
+				if(ventaSelec == null) {
+					JOptionPane.showMessageDialog(null, "La venta seleccionada no existe.");
+				}else {
+					usuario.getVentas().remove(ventaSelec);
+				}
+				
+				eliminarOtro = JOptionPane.showConfirmDialog(null, "¿Desea eliminar otra venta?", null, JOptionPane.YES_NO_OPTION);
+			}
+			
+			Maqueta.ventas();
+		}
+		
+		
+	}
+
+	private static Venta obtenerVenta(String idVenta) {
+	
+		Productor usuario = (Productor)Maqueta.userSesion;
+		for(Venta venta : usuario.getVentas()) {
+			
+			if(venta.getId().equalsIgnoreCase(idVenta)) {
+				return venta;
+			}
+		}
+		
+		return null;
+		
 	}
 }

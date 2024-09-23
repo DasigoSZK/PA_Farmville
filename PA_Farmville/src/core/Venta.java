@@ -13,14 +13,14 @@ public class Venta {
 	private String destino;
 	private List<Bovino> bovinosVendidos;
 	private double importeTotal;
-	private PropositoVenta proposito;
+	private String proposito;
 	private int rinde;
 	private int fk_usuario;
 	
 	// Constructor
 	public Venta(String id, LocalDate fechaVenta, String comprador, String numFactura, String formaPago,
 			String campoOrigen, String destino, List<Bovino> bovinosVendidos, double importeTotal,
-			PropositoVenta proposito, int rinde, int fk_usuario) {
+			String proposito, int rinde, int fk_usuario) {
 		super();
 		this.id = id;
 		this.fechaVenta = fechaVenta;
@@ -110,11 +110,11 @@ public class Venta {
 		this.importeTotal = importeTotal;
 	}
 
-	public PropositoVenta getProposito() {
+	public String getProposito() {
 		return proposito;
 	}
 
-	public void setProposito(PropositoVenta proposito) {
+	public void setProposito(String proposito) {
 		this.proposito = proposito;
 	}
 
