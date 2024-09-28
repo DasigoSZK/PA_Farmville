@@ -1,7 +1,7 @@
-package core;
+package modelos;
 
 public abstract class Usuario {
-	private String id;
+	private Integer id;
 	private String nombre;
 	private String apellido;
 	private String correo;
@@ -10,7 +10,7 @@ public abstract class Usuario {
 	private String respuestaSeguridad;
 	
 	// Constructor
-	public Usuario(String id, String nombre, String apellido, String correo, String contrasena,
+	public Usuario(Integer id, String nombre, String apellido, String correo, String contrasena,
 			String preguntaSeguridad, String respuestaSeguridad) {
 		super();
 		this.id = id;
@@ -24,11 +24,11 @@ public abstract class Usuario {
 
 	
 	// Métodos
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

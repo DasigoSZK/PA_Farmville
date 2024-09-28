@@ -1,7 +1,4 @@
 package test;
-import core.*;
-import modelos.*;
-import controladores.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,6 +6,8 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import javax.swing.JOptionPane;
+
+import modelos.*;
 
 
 public class Maqueta {
@@ -21,10 +20,10 @@ public class Maqueta {
 	public static void main(String[] args) {
 		
 		// Usuarios Test
-		Productor productorTest = new Productor("1", "Dasigo", "Szkamarda", "user@hotmail.com", "user123",
+		Productor productorTest = new Productor(1, "Dasigo", "Szkamarda", "user@hotmail.com", "user123",
 				"¿Cuál fue el nombre de tu primer perro?", "lulu", "3644643942", "43887305", "20438873057", 
 				CondicionFiscal.EXENTO.getValorInterno(), "Pampa Florida", null, null, null, null);
-		Administrador adminTest = new Administrador("1", "Leandro", "Steyskal", "admin@hotmail.com", "admin123",
+		Administrador adminTest = new Administrador(1, "Leandro", "Steyskal", "admin@hotmail.com", "admin123",
 				"¿Cuál fue tu primera consola?", "Nintendo 64");
 		
 		usuariosRegistrados.add(productorTest);
@@ -134,7 +133,7 @@ public class Maqueta {
 		String contrasena = JOptionPane.showInputDialog("Ingrese una contraseña");
 		userCount++;
 		
-		Productor usuarioGenerico = new Productor(String.valueOf(userCount), "Genérico"+String.valueOf(userCount), "", 
+		Productor usuarioGenerico = new Productor(userCount, "Genérico"+String.valueOf(userCount), "", 
 				correo, contrasena,
 				"¿Cuál es tu nombre de usuario?", "generico", "1234123456", "12123123", "12121231231", 
 				CondicionFiscal.EXENTO.getValorInterno(), "Domicilio Genérico", null, null, null, null);
@@ -209,7 +208,7 @@ public class Maqueta {
 			String contrasena = JOptionPane.showInputDialog("Contraseña del nuevo admin");
 			userCount++;
 			
-			Administrador adminGenerico = new Administrador(String.valueOf(userCount), "AdminGen"+String.valueOf(userCount), "",
+			Administrador adminGenerico = new Administrador(userCount, "AdminGenerico"+userCount, "",
 					correo, contrasena, "¿Pregunta genérica?", "generico");
 			
 			usuariosRegistrados.add(adminGenerico);
@@ -361,10 +360,10 @@ public class Maqueta {
 				}
 				
 				// Creamos un nuevo lote
-				String id = campoSeleccionado.getLotes().isEmpty() ? "1" : String.valueOf(campoSeleccionado.getLotes().size());
+				Integer id = campoSeleccionado.getLotes().isEmpty() ? 1 : campoSeleccionado.getLotes().size();
 				String numero = JOptionPane.showInputDialog("Ingrese el número u nombre del lote.");
 				int hectareas = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad de hectareas del lote " + numero));
-				int fk_campo = Integer.parseInt(campoSeleccionado.getId());
+				int fk_campo = campoSeleccionado.getId();
 				Lote nuevoLote = new Lote(id, numero, hectareas, fk_campo);
 				
 				// Asociamos el lote al campo
@@ -591,12 +590,12 @@ public class Maqueta {
 	// Campos
 	private static void registrarCampo(Productor usuario) {
 		
-		String idCampo = usuario.getCampos() == null ? "1" : String.valueOf(usuario.getCampos().size()+1);
+		Integer idCampo = usuario.getCampos() == null ? 1 : usuario.getCampos().size()+1;
 		String nombreCampo = JOptionPane.showInputDialog("Ingrese el nombre del campo");
 		String ubicacion = JOptionPane.showInputDialog("Ingrese la ubicación del campo");
 		int hectareas = Integer.parseInt(JOptionPane.showInputDialog("Ingrese las hectareas estimadas del campo \"" + nombreCampo + "\"."));
 		
-		Campo nuevoCampo = new Campo(idCampo, nombreCampo, ubicacion, hectareas, Integer.parseInt(usuario.getId()));
+		Campo nuevoCampo = new Campo(idCampo, nombreCampo, ubicacion, hectareas, usuario.getId());
 		
 		usuario.getCampos().add(nuevoCampo);
 		
@@ -804,7 +803,7 @@ public class Maqueta {
 		try {
 			// Datos del Nuevo Bovino
 			// id
-			String id = String.valueOf(usuario.getBovinos().size());
+			Integer id = usuario.getBovinos().size();
 			// caravana
 			int caravana = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el número de caravana (solo números)"));
 			// categoria
@@ -867,7 +866,7 @@ public class Maqueta {
 			LocalDate fechaBrucelosis = LocalDate.now();
 			// Estado y usuario asociado
 			String estado = EstadoBovino.EN_STOCK.getValorInterno();
-			int fk_usuario = Integer.parseInt(usuario.getId());
+			int fk_usuario = usuario.getId();
 			
 			// Registramos el nuevo bovino
 			Bovino nuevoBovino = new Bovino(id, caravana, categoria, raza, sexo, edad, peso, lote, fechaAdquisicion, origen,
@@ -909,13 +908,13 @@ public class Maqueta {
 		// Recuperamos el bovino con su ID
 		while(bovino == null && volverIntentar != JOptionPane.YES_OPTION) {
 			String listaStock = Maqueta.listarStock(usuario);
-			String idBovino = JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock);
+			Integer idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock));
 			bovino = Maqueta.buscarBovino(idBovino, usuario.getBovinos());
 			if(bovino == null) {
 				volverIntentar = JOptionPane.showConfirmDialog(null, "El bovino con id \"" + idBovino + "\" no se encuentra en tu stock.\n"
 						+ "¿Quiere intentar ingresarlo nuevamente?", "Modificar Bovino", JOptionPane.YES_NO_OPTION);
 				if(volverIntentar == JOptionPane.YES_OPTION) {				
-					idBovino = JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock);
+					idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock));
 				}else {
 					Maqueta.hacienda();
 				}
@@ -1044,10 +1043,10 @@ public class Maqueta {
 		
 		
 	}
-	private static Bovino buscarBovino(String idBovino, List<Bovino> bovinos) {
+	private static Bovino buscarBovino(Integer idBovino, List<Bovino> bovinos) {
 		
 		for(Bovino bovino : bovinos){
-			if(bovino.getId().equalsIgnoreCase(idBovino)) {
+			if(bovino.getId()== idBovino) {
 				return bovino;
 			}
 		}
@@ -1062,13 +1061,13 @@ public class Maqueta {
 		// Recuperamos el bovino con su ID
 		while(bovino == null && volverIntentar != JOptionPane.YES_OPTION) {
 			String listaStock = Maqueta.listarStock(usuario);
-			String idBovino = JOptionPane.showInputDialog("Ingrese el número (n°) del bovino que desea eliminar:\n"+listaStock);
+			Integer idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el número (n°) del bovino que desea eliminar:\n"+listaStock));
 			bovino = Maqueta.buscarBovino(idBovino, usuario.getBovinos());
 			if(bovino == null) {
 				volverIntentar = JOptionPane.showConfirmDialog(null, "El bovino con id \"" + idBovino + "\" no se encuentra en tu stock.\n"
 						+ "¿Quiere intentar ingresarlo nuevamente?", "Modificar Bovino", JOptionPane.YES_NO_OPTION);
 				if(volverIntentar == JOptionPane.YES_OPTION) {				
-					idBovino = JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock);
+					idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el \"id\" del bovino que desea movidicar:\n"+listaStock));
 				}else {
 					Maqueta.hacienda();
 				}
@@ -1140,8 +1139,8 @@ public class Maqueta {
 				}
 				
 				for(int i=0; i<cantidad; i++) {
-					Bovino nuevoBovino = new Bovino(categoria, peso, fechaAdquisicion, Integer.parseInt(usuario.getId()));
-					nuevoBovino.setId(String.valueOf(usuario.getBovinos().size() + jaula.size()));
+					Bovino nuevoBovino = new Bovino(categoria, peso, fechaAdquisicion, usuario.getId());
+					nuevoBovino.setId(usuario.getBovinos().size() + jaula.size());
 					jaula.add(nuevoBovino);
 				}
 				
@@ -1204,7 +1203,7 @@ public class Maqueta {
 	private static void recuperarBovino(Productor usuario) {
 		
 		String listaBajas = getHistorialDeBajas(usuario);
-		String idBovino = JOptionPane.showInputDialog("Ingresa el número (n°) del bovino a recuperar:\n" + listaBajas);
+		Integer idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingresa el número (n°) del bovino a recuperar:\n" + listaBajas));
 		
 		Bovino bovinoRecuperar = buscarBovino(idBovino, usuario.getBovinos());
 		bovinoRecuperar.setEstado(EstadoBovino.EN_STOCK.getValorInterno());
@@ -1254,7 +1253,7 @@ public class Maqueta {
 			if(usuario.getVentas() == null) {
 				usuario.setVentas(new LinkedList<Venta>());
 			}
-			String id = String.valueOf(usuario.getVentas().size());
+			Integer id = usuario.getVentas().size();
 			// Fecha
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			String stringFecha = JOptionPane.showInputDialog("Ingrese la fecha de la venta en formato \"dd/MM/yyyy\" \n(Ejemplo 17/09/2024):");
@@ -1265,8 +1264,6 @@ public class Maqueta {
 			String numFactura = JOptionPane.showInputDialog("Ingrese el número de factura");
 			// Forma de pago
 			String formaPago = JOptionPane.showInputDialog("Ingrese la forma de pago (contado/transferencia).");
-			// Campo origen
-			String campoOrigen = JOptionPane.showInputDialog("¿En qué campo se cargan los bovinos?");
 			// Destino
 			String destino = JOptionPane.showInputDialog("¿En qué campo se descargan los bovinos?");
 			// Bovinos Vendidos
@@ -1286,15 +1283,15 @@ public class Maqueta {
 					null, opcionesPropositos, opcionesPropositos[0]);
 			String proposito = opcionesPropositos[opProposito];
 			// Rinde
-			int rinde = 0;
+			Integer rinde = 0;
 			if(proposito.equalsIgnoreCase(PropositoVenta.FEEDLOT.getValorInterno())) {
 				rinde = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el procentaje de rinde de la venta (número sin comas)"));
 			}
 			// fk_usuario
-			int fk_usuario = Integer.parseInt(usuario.getId());
+			Integer fk_usuario = usuario.getId();
 			
 			// Registramos la venta
-			Venta nuevaVenta = new Venta(id, fechaAdquisicion, comprador, numFactura, formaPago, campoOrigen, destino,
+			Venta nuevaVenta = new Venta(id, fechaAdquisicion, comprador, numFactura, formaPago, destino,
 					bovinosDeVenta,importeTotal, proposito, rinde, fk_usuario);
 			// Agregamos la venta al usuario
 			usuario.getVentas().add(nuevaVenta);
@@ -1322,13 +1319,13 @@ public class Maqueta {
 			}
 			
 			// Seleccionamos el id de un bovino mostrando la lista
-			String idBovino = JOptionPane.showInputDialog("Ingrese el ID del bovino que desea agregar a la venta:\n" + listaBovinos);
+			Integer idBovino = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del bovino que desea agregar a la venta:\n" + listaBovinos));
 			
 			// Buscamos el bovino
 			Iterator<Bovino> iterator = bovinosEnStock.iterator();
 			while (iterator.hasNext()) {
 			    Bovino bovino = iterator.next();
-			    if (bovino.getId().equalsIgnoreCase(idBovino)) {
+			    if (bovino.getId() == idBovino) {
 			        // Lo agregamos a la venta
 			        bovinosVenta.add(bovino);
 			        // Lo quitamos del stock de manera segura
@@ -1367,7 +1364,7 @@ public class Maqueta {
 			
 			while(eliminarOtro == JOptionPane.YES_OPTION && !usuario.getVentas().isEmpty()) {
 				
-				String idVenta = JOptionPane.showInputDialog("Ingrese el n° de venta que desea eliminar:\n"+Maqueta.listarVentas(usuario));
+				Integer idVenta = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el n° de venta que desea eliminar:\n"+Maqueta.listarVentas(usuario)));
 				
 				Venta ventaSelec = Maqueta.obtenerVenta(idVenta);
 				if(ventaSelec == null) {
@@ -1385,12 +1382,12 @@ public class Maqueta {
 		
 	}
 
-	private static Venta obtenerVenta(String idVenta) {
+	private static Venta obtenerVenta(Integer idVenta) {
 	
 		Productor usuario = (Productor)Maqueta.userSesion;
 		for(Venta venta : usuario.getVentas()) {
 			
-			if(venta.getId().equalsIgnoreCase(idVenta)) {
+			if(venta.getId() == idVenta) {
 				return venta;
 			}
 		}

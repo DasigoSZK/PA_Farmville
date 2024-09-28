@@ -1,33 +1,30 @@
-package core;
+package modelos;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class Venta {
-	private String id;
+	private Integer id;
 	private LocalDate fechaVenta;
 	private String comprador;
 	private String numFactura;
 	private String formaPago;
-	private String campoOrigen;
 	private String destino;
 	private List<Bovino> bovinosVendidos;
 	private double importeTotal;
 	private String proposito;
-	private int rinde;
-	private int fk_usuario;
+	private Integer rinde;
+	private Integer fk_usuario;
 	
 	// Constructor
-	public Venta(String id, LocalDate fechaVenta, String comprador, String numFactura, String formaPago,
-			String campoOrigen, String destino, List<Bovino> bovinosVendidos, double importeTotal,
-			String proposito, int rinde, int fk_usuario) {
+	public Venta(Integer id, LocalDate fechaVenta, String comprador, String numFactura, String formaPago, String destino, List<Bovino> bovinosVendidos, double importeTotal,
+			String proposito, Integer rinde, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.fechaVenta = fechaVenta;
 		this.comprador = comprador;
 		this.numFactura = numFactura;
 		this.formaPago = formaPago;
-		this.campoOrigen = campoOrigen;
 		this.destino = destino;
 		this.bovinosVendidos = bovinosVendidos;
 		this.importeTotal = importeTotal;
@@ -38,11 +35,11 @@ public class Venta {
 
 	
 	// Métodos
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -78,14 +75,6 @@ public class Venta {
 		this.formaPago = formaPago;
 	}
 
-	public String getCampoOrigen() {
-		return campoOrigen;
-	}
-
-	public void setCampoOrigen(String campoOrigen) {
-		this.campoOrigen = campoOrigen;
-	}
-
 	public String getDestino() {
 		return destino;
 	}
@@ -118,19 +107,19 @@ public class Venta {
 		this.proposito = proposito;
 	}
 
-	public int getRinde() {
+	public Integer getRinde() {
 		return rinde;
 	}
 
-	public void setRinde(int rinde) {
+	public void setRinde(Integer rinde) {
 		this.rinde = rinde;
 	}
 
-	public int getFk_usuario() {
+	public Integer getFk_usuario() {
 		return fk_usuario;
 	}
 
-	public void setFk_usuario(int fk_usuario) {
+	public void setFk_usuario(Integer fk_usuario) {
 		this.fk_usuario = fk_usuario;
 	}
 	

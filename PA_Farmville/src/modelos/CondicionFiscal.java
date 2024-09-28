@@ -1,4 +1,4 @@
-package core;
+package modelos;
 
 public enum CondicionFiscal {
 	

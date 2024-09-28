@@ -1,4 +1,4 @@
-package core;
+package modelos;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class Productor extends Usuario{
 	private List<Hoteleria> serviciosHoteleria;
 	
 	// Constructor
-	public Productor(String id, String nombre, String apellido, String correo, String contrasena,
+	public Productor(Integer id, String nombre, String apellido, String correo, String contrasena,
 			String preguntaSeguridad, String respuestaSeguridad, String telefono, String DNI, String CUIT,
 			String cond, String domicilioFiscal, List<Campo> campos, List<Bovino> bovinos, List<Venta> ventas,
 			List<Hoteleria> serviciosHoteleria) {

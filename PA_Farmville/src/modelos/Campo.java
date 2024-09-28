@@ -1,17 +1,17 @@
-package core;
+package modelos;
 
 import java.util.List;
 
 public class Campo {
-	private String id;
+	private Integer id;
 	private String nombre;
 	private String ubicacion;
-	private int hectareas;
+	private Integer hectareas;
 	private List<Lote> lotes;
-	private int fk_usuario;
+	private Integer fk_usuario;
 	
 	// Constructor
-	public Campo(String id, String nombre, String ubicacion, int fk_usuario) {
+	public Campo(Integer id, String nombre, String ubicacion, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -20,7 +20,7 @@ public class Campo {
 		this.lotes = null;
 		this.fk_usuario = fk_usuario;
 	}
-	public Campo(String id, String nombre, String ubicacion, int hectareas, int fk_usuario) {
+	public Campo(Integer id, String nombre, String ubicacion, Integer hectareas, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -29,7 +29,7 @@ public class Campo {
 		this.lotes = null;
 		this.fk_usuario = fk_usuario;
 	}
-	public Campo(String id, String nombre, String ubicacion, int hectareas, List<Lote> lotes, int fk_usuario) {
+	public Campo(Integer id, String nombre, String ubicacion, Integer hectareas, List<Lote> lotes, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -41,10 +41,10 @@ public class Campo {
 	
 	
 	// Metodos
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getNombre() {
@@ -59,10 +59,10 @@ public class Campo {
 	public void setUbicacion(String ubicacion) {
 		this.ubicacion = ubicacion;
 	}
-	public int getHectareas() {
+	public Integer getHectareas() {
 		return hectareas;
 	}
-	public void setHectareas(int hectareas) {
+	public void setHectareas(Integer hectareas) {
 		this.hectareas = hectareas;
 	}
 	public List<Lote> getLotes() {
@@ -71,10 +71,10 @@ public class Campo {
 	public void setLotes(List<Lote> lotes) {
 		this.lotes = lotes;
 	}
-	public int getFk_usuario() {
+	public Integer getFk_usuario() {
 		return fk_usuario;
 	}
-	public void setFk_usuario(int fk_usuario) {
+	public void setFk_usuario(Integer fk_usuario) {
 		this.fk_usuario = fk_usuario;
 	}
 

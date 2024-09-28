@@ -1,13 +1,12 @@
-package core;
+package modelos;
 
-public enum Origen {
-	PROPIO("propio"),
-	COMPRA("compra"),
-	ENGORDE("engorde");
+public enum Sexo {
+	MACHO("macho"),
+	HEMBRA("hembra");
 	
     private final String valorInterno;
 
-    private Origen(String valorInterno) {
+    private Sexo(String valorInterno) {
         this.valorInterno = valorInterno;
     }
 

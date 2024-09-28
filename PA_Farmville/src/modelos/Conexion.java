@@ -1,4 +1,4 @@
-package core;
+package modelos;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

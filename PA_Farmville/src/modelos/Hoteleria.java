@@ -1,20 +1,20 @@
-package core;
+package modelos;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class Hoteleria {
-	private int id;
+	private Integer id;
 	private String propietario;
 	private List<Bovino> bovinos;
-	private double precioPorKgGanado;
+	private Double precioPorKgGanado;
 	private LocalDate fechaAdquisicion;
-	private boolean finalizado;
-	private int fk_usuario;
+	private Boolean finalizado;
+	private Integer fk_usuario;
 	
 	// Constructor
-	public Hoteleria(int id, String propietario, List<Bovino> bovinos, double precioPorKgGanado,
-			LocalDate fechaAdquisicion, boolean finalizado, int fk_usuario) {
+	public Hoteleria(Integer id, String propietario, List<Bovino> bovinos, Double precioPorKgGanado,
+			LocalDate fechaAdquisicion, Boolean finalizado, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.propietario = propietario;
@@ -29,11 +29,11 @@ public class Hoteleria {
 	
 	
 	// Métodos
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -57,7 +57,7 @@ public class Hoteleria {
 		return precioPorKgGanado;
 	}
 
-	public void setPrecioPorKgGanado(double precioPorKgGanado) {
+	public void setPrecioPorKgGanado(Double precioPorKgGanado) {
 		this.precioPorKgGanado = precioPorKgGanado;
 	}
 
@@ -73,7 +73,7 @@ public class Hoteleria {
 		return finalizado;
 	}
 
-	public void setFinalizado(boolean finalizado) {
+	public void setFinalizado(Boolean finalizado) {
 		this.finalizado = finalizado;
 	}
 
@@ -81,7 +81,7 @@ public class Hoteleria {
 		return fk_usuario;
 	}
 
-	public void setFk_usuario(int fk_usuario) {
+	public void setFk_usuario(Integer fk_usuario) {
 		this.fk_usuario = fk_usuario;
 	}
 

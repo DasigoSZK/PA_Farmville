@@ -1,37 +1,38 @@
-package core;
+package modelos;
 
 import java.time.LocalDate;
 
 public class Bovino {
-	private String id;
-	private int caravana;
+	private Integer id;
+	private Integer caravana;
 	private String categoria;
 	private String raza;
 	private String sexo;
-	private int edad;
-	private double peso;
+	private Integer edad;
+	private Double peso;
 	private Lote lote;
 	private LocalDate fechaAdquisicion;
 	private String origen;
-	private boolean vacunaAftosa;
+	private Boolean vacunaAftosa;
 	private LocalDate fechaAftosa;
-	private boolean vacunaBrucelosis;
+	private Boolean vacunaBrucelosis;
 	private LocalDate fechaBrucelosis;
 	private String estado;
-	private int fk_usuario;
-	private int fk_lote;
-	private int fk_venta;
-	private int fk_hoteleria;
+	private Integer fk_usuario;
+	private Integer fk_lote;
+	private Integer fk_venta;
+	private Integer fk_hoteleria;
 	
 	// Constructor
 	
 	// (Constructor para jaula)
-	public Bovino(String categoria,double peso, LocalDate fechaAdquisicion, int fk_usuario) {
+	public Bovino(String categoria,Double peso, LocalDate fechaAdquisicion, Integer fk_usuario) {
 		super();
 		this.id = id;
 		this.caravana = 0;
 		this.categoria = categoria;
 		this.raza = RazaBovino.ANGUS.getValorInterno();
+		
 		// Declara el sexo según la categoría
 		if(categoria.equals(CategoriaBovino.TERNERO.getValorInterno())
 				|| categoria.equals(CategoriaBovino.NOBILLO.getValorInterno()) 
@@ -40,6 +41,7 @@ public class Bovino {
 		}else {
 			this.sexo = Sexo.HEMBRA.getValorInterno();
 		}
+		
 		// Declara la edad según la categoría
 		if(this.categoria.equals(CategoriaBovino.TERNERO.getValorInterno())
 				|| this.categoria.equals(CategoriaBovino.TERNERA.getValorInterno())) this.edad = 1;
@@ -62,9 +64,10 @@ public class Bovino {
 		this.fk_venta = 0;
 		this.fk_hoteleria = 0;
 	}
-	public Bovino(String id, int caravana, String categoria, String raza, String sexo, int edad,
-			double peso, Lote lote, LocalDate fechaAdquisicion, String origen, boolean vacunaAftosa,
-			LocalDate fechaAftosa, boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
+	
+	public Bovino(Integer id, Integer caravana, String categoria, String raza, String sexo, Integer edad,
+			Double peso, Lote lote, LocalDate fechaAdquisicion, String origen, Boolean vacunaAftosa,
+			LocalDate fechaAftosa, Boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
 			int fk_usuario) {
 		super();
 		this.id = id;
@@ -87,10 +90,10 @@ public class Bovino {
 		this.fk_venta = 0;
 		this.fk_hoteleria = 0;
 	}
-	public Bovino(String id, int caravana, String categoria, String raza, String sexo, int edad,
-			double peso, Lote lote, LocalDate fechaAdquisicion, String origen, boolean vacunaAftosa,
-			LocalDate fechaAftosa, boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
-			int fk_usuario, int fk_lote) {
+	public Bovino(Integer id, Integer caravana, String categoria, String raza, String sexo, int edad,
+			Double peso, Lote lote, LocalDate fechaAdquisicion, String origen, Boolean vacunaAftosa,
+			LocalDate fechaAftosa, Boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
+			Integer fk_usuario, Integer fk_lote) {
 		super();
 		this.id = id;
 		this.caravana = caravana;
@@ -112,9 +115,9 @@ public class Bovino {
 		this.fk_venta = 0;
 		this.fk_hoteleria = 0;
 	}
-	public Bovino(String id, int caravana, String categoria, String raza, String sexo, int edad,
-			double peso, Lote lote, LocalDate fechaAdquisicion, String origen, boolean vacunaAftosa,
-			LocalDate fechaAftosa, boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
+	public Bovino(Integer id, Integer caravana, String categoria, String raza, String sexo, Integer edad,
+			Double peso, Lote lote, LocalDate fechaAdquisicion, String origen, Boolean vacunaAftosa,
+			LocalDate fechaAftosa, Boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
 			int fk_usuario, int fk_lote, int fk_venta) {
 		super();
 		this.id = id;
@@ -137,10 +140,10 @@ public class Bovino {
 		this.fk_venta = fk_venta;
 		this.fk_hoteleria = 0;
 	}
-	public Bovino(String id, int caravana, String categoria, String raza, String sexo, int edad,
-			double peso, Lote lote, LocalDate fechaAdquisicion, String origen, boolean vacunaAftosa,
-			LocalDate fechaAftosa, boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
-			int fk_usuario, int fk_lote, int fk_venta, int fk_hoteleria) {
+	public Bovino(Integer id, int caravana, String categoria, String raza, String sexo, Integer edad,
+			Double peso, Lote lote, LocalDate fechaAdquisicion, String origen, Boolean vacunaAftosa,
+			LocalDate fechaAftosa, Boolean vacunaBrucelosis, LocalDate fechaBrucelosis, String estado,
+			Integer fk_usuario, Integer fk_lote, Integer fk_venta, Integer fk_hoteleria) {
 		super();
 		this.id = id;
 		this.caravana = caravana;
@@ -169,16 +172,16 @@ public class Bovino {
 
 	// Métodos
 	
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
-	public int getCaravana() {
+	public Integer getCaravana() {
 		return caravana;
 	}
-	public void setCaravana(int caravana) {
+	public void setCaravana(Integer caravana) {
 		this.caravana = caravana;
 	}
 	public String getCategoria() {
@@ -199,16 +202,16 @@ public class Bovino {
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
-	public int getEdad() {
+	public Integer getEdad() {
 		return edad;
 	}
-	public void setEdad(int edad) {
+	public void setEdad(Integer edad) {
 		this.edad = edad;
 	}
-	public double getPeso() {
+	public Double getPeso() {
 		return peso;
 	}
-	public void setPeso(double peso) {
+	public void setPeso(Double peso) {
 		this.peso = peso;
 	}
 	public Lote getLote() {
@@ -229,10 +232,10 @@ public class Bovino {
 	public void setOrigen(String origen) {
 		this.origen = origen;
 	}
-	public boolean isVacunaAftosa() {
+	public Boolean isVacunaAftosa() {
 		return vacunaAftosa;
 	}
-	public void setVacunaAftosa(boolean vacunaAftosa) {
+	public void setVacunaAftosa(Boolean vacunaAftosa) {
 		this.vacunaAftosa = vacunaAftosa;
 	}
 	public LocalDate getFechaAftosa() {
@@ -241,10 +244,10 @@ public class Bovino {
 	public void setFechaAftosa(LocalDate fechaAftosa) {
 		this.fechaAftosa = fechaAftosa;
 	}
-	public boolean isVacunaBrucelosis() {
+	public Boolean isVacunaBrucelosis() {
 		return vacunaBrucelosis;
 	}
-	public void setVacunaBrucelosis(boolean vacunaBrucelosis) {
+	public void setVacunaBrucelosis(Boolean vacunaBrucelosis) {
 		this.vacunaBrucelosis = vacunaBrucelosis;
 	}
 	public LocalDate getFechaBrucelosis() {
@@ -259,28 +262,28 @@ public class Bovino {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	public int getFk_usuario() {
+	public Integer getFk_usuario() {
 		return fk_usuario;
 	}
-	public void setFk_usuario(int fk_usuario) {
+	public void setFk_usuario(Integer fk_usuario) {
 		this.fk_usuario = fk_usuario;
 	}
-	public int getFk_lote() {
+	public Integer getFk_lote() {
 		return fk_lote;
 	}
-	public void setFk_lote(int fk_lote) {
+	public void setFk_lote(Integer fk_lote) {
 		this.fk_lote = fk_lote;
 	}
-	public int getFk_venta() {
+	public Integer getFk_venta() {
 		return fk_venta;
 	}
-	public void setFk_venta(int fk_venta) {
+	public void setFk_venta(Integer fk_venta) {
 		this.fk_venta = fk_venta;
 	}
-	public int getFk_hoteleria() {
+	public Integer getFk_hoteleria() {
 		return fk_hoteleria;
 	}
-	public void setFk_hoteleria(int fk_hoteleria) {
+	public void setFk_hoteleria(Integer fk_hoteleria) {
 		this.fk_hoteleria = fk_hoteleria;
 	}
 
